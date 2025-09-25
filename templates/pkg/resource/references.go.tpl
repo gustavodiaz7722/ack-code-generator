@@ -17,6 +17,7 @@ import (
 	ackerr "github.com/aws-controllers-k8s/runtime/pkg/errors"
 {{ end -}}
 	acktypes "github.com/aws-controllers-k8s/runtime/pkg/types"
+  ackcondition "github.com/aws-controllers-k8s/runtime/pkg/condition"
 {{ $servicePackageName := .ServicePackageName -}}
 {{ $apiVersion := .APIVersion -}}
 {{ if .CRD.HasReferenceFields -}}

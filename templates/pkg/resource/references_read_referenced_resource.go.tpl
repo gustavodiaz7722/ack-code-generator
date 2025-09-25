@@ -30,8 +30,9 @@ func getReferencedResourceState_{{ .FieldConfig.References.Resource }}(
 	}
 	var refResourceTerminal bool
 	for _, cond := range obj.Status.Conditions {
-		if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
-			cond.Status == corev1.ConditionTrue {
+		if cond.Type == ackv1alpha1.ConditionTypeReady &&
+			cond.Status == corev1.ConditionFalse &&
+			*cond.Reason == ackcondition.TerminalReason {
 			return ackerr.ResourceReferenceTerminalFor(
 				"{{ .FieldConfig.References.Resource }}",
 				namespace, name)
@@ -43,14 +44,14 @@ func getReferencedResourceState_{{ .FieldConfig.References.Resource }}(
 			namespace, name)
 	}
 {{if not .FieldConfig.References.SkipResourceStateValidations -}}
-	var refResourceSynced bool
+	var refResourceReady bool
 	for _, cond := range obj.Status.Conditions {
-		if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+		if cond.Type == ackv1alpha1.ConditionTypeReady &&
 			cond.Status == corev1.ConditionTrue {
-			refResourceSynced = true
+			refResourceReady = true
 		}
 	}
-	if !refResourceSynced {
+	if !refResourceReady {
 		return ackerr.ResourceReferenceNotSyncedFor(
 			"{{ .FieldConfig.References.Resource }}",
 			namespace, name)
